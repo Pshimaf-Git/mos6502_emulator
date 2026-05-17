@@ -59,7 +59,6 @@ func main() {
 ### Project structure
 
 ```
-```
 .
 ├── addr.go           – addressing mode functions
 ├── arithmetic.go     – ADC, SBC, INC, DEC, etc.
@@ -79,9 +78,6 @@ func main() {
 ├── word.go           – type alias for uint16
 ├── cpu_test.go       – exhaustive test suite
 └── go.mod            – module definition
-```
-```
-```
 ```
 
 ### Supported Instructions
