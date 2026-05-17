@@ -109,17 +109,13 @@ func (cpu *CPU) Step(opcode byte) {
 		panic(fmt.Sprintf("Unknown opcode: 0x%02X at PC=0x%04X", opcode, cpu.Regs.PC-1))
 	}
 
-	// fmt.Printf("OPCODE<0x%X> PC<0x%X> X<0x%X>\n", opcode, cpu.Regs.PC, cpu.Regs.X)
-
 	inst.exec(inst.mode)
-	// fmt.Printf("After exec OPCODE<0x%X> PC<0x%X> X<0x%X>\n", opcode, cpu.Regs.PC, cpu.Regs.X)
 }
 
 func (cpu *CPU) Reset() {
 	low := Word(cpu.Read(0xFFFC))
 	high := Word(cpu.Read(0xFFFD))
 	cpu.Regs.PC = Word(high)<<8 | Word(low)
-	fmt.Printf("Reset vector: 0x%04X\n", cpu.Regs.PC)
 
 	cpu.Regs.SP = STACK_START_VALUE
 	cpu.Regs.P = DEFAULT_FLAG
