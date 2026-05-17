@@ -1,0 +1,217 @@
+package emulator
+
+type (
+	modeFunc = func() Word
+	execFunc = func(modeFunc)
+)
+
+type instruction struct {
+	name string
+	mode modeFunc
+	exec execFunc
+}
+
+func newIntr(name string, mode modeFunc, exec execFunc) instruction {
+	return instruction{
+		name: name,
+		mode: mode,
+		exec: exec,
+	}
+}
+
+const (
+	BRK = 0x00
+
+	LDA_IMM   = 0xA9
+	LDA_ABS   = 0xAD
+	LDA_ZP    = 0xA5
+	LDA_ABS_Y = 0xB9
+	LDA_IND_Y = 0xB1
+	LDA_ABS_X = 0xBD
+	LDA_ZP_X  = 0xB5
+	LDA_IND_X = 0xA1
+
+	LDX_IMM   = 0xA2
+	LDX_ZP    = 0xA6
+	LDX_ABS   = 0xAE
+	LDX_ZP_Y  = 0xB6
+	LDX_ABS_Y = 0xBE
+
+	LDY_IMM   = 0xA0
+	LDY_ZP    = 0xA4
+	LDY_ABS   = 0xAC
+	LDY_ZP_X  = 0xB4
+	LDY_ABS_X = 0xBC
+
+	ADC_IMM   = 0x69
+	ADC_ABS   = 0x6D
+	ADC_ZP    = 0x65
+	ADC_ZP_X  = 0x75
+	ADC_ABS_X = 0x7D
+	ADC_ABS_Y = 0x79
+	ADC_IND_X = 0x61
+	ADC_IND_Y = 0x71
+
+	STA_ZP    = 0x85
+	STA_ZP_X  = 0x95
+	STA_ABS   = 0x8D
+	STA_ABS_X = 0x9D
+	STA_ABS_Y = 0x99
+	STA_IND_X = 0x81
+	STA_IND_Y = 0x91
+
+	JMP_ABS = 0x4C
+	JMP_IND = 0x6C
+
+	SEC = 0x38
+
+	INC_ZP    = 0xE6
+	INC_ABS   = 0xEE
+	INC_ZP_X  = 0xF6
+	INC_ABS_X = 0xFE
+
+	INX = 0xE8
+	INY = 0xC8
+
+	DEC_ZP    = 0xC6
+	DEC_ABS   = 0xCE
+	DEC_ZP_X  = 0xD6
+	DEC_ABS_X = 0xDE
+
+	DEX = 0xCA
+	DEY = 0x88
+
+	BNE = 0xD0
+	BEQ = 0xF0
+	BVS = 0x70
+	BVC = 0x50
+	BCC = 0x90
+	BCS = 0xB0
+	BPL = 0x10
+	BMI = 0x30
+
+	CMP_IMM   = 0xC9
+	CMP_ZP    = 0xC5
+	CMP_ZP_X  = 0xD5
+	CMP_ABS   = 0xCD
+	CMP_ABS_X = 0xDD
+	CMP_ABS_Y = 0xD9
+	CMP_IND_X = 0xC1
+	CMP_IND_Y = 0xD1
+
+	EOR_IMM   = 0x49
+	EOR_ZP    = 0x45
+	EOR_ZP_X  = 0x55
+	EOR_ABS   = 0x4D
+	EOR_ABS_X = 0x5D
+	EOR_ABS_Y = 0x59
+	EOR_IND_X = 0x41
+	EOR_IND_Y = 0x51
+
+	ORA_IMM   = 0x09
+	ORA_ZP    = 0x05
+	ORA_ZP_X  = 0x15
+	ORA_ABS   = 0x0D
+	ORA_ABS_X = 0x1D
+	ORA_ABS_Y = 0x19
+	ORA_IND_X = 0x01
+	ORA_IND_Y = 0x11
+
+	AND_IMM   = 0x29
+	AND_ZP    = 0x25
+	AND_ZP_X  = 0x35
+	AND_ABS   = 0x2D
+	AND_ABS_X = 0x3D
+	AND_ABS_Y = 0x39
+	AND_IND_X = 0x21
+	AND_IND_Y = 0x31
+
+	JSR_ABS = 0x20
+
+	RTS = 0x60
+
+	ASL_ACC   = 0x0A
+	ASL_ZP    = 0x06
+	ASL_ZP_X  = 0x16
+	ASL_ABS   = 0x0E
+	ASL_ABS_X = 0x1E
+
+	LSR_ACC   = 0x4A
+	LSR_ZP    = 0x46
+	LSR_ABS   = 0x4E
+	LSR_ABS_X = 0x5E
+
+	CPX_IMM = 0xE0
+	CPX_ZP  = 0xE4
+	CPY_IMM = 0xC0
+	CPY_ZP  = 0xC4
+
+	TAX = 0xAA
+	TAY = 0xA8
+	TXA = 0x8A
+	TYA = 0x98
+	TXS = 0x9A
+	TSX = 0xBA
+
+	CLC = 0x18
+
+	PHP = 0x08
+	PHA = 0x48
+	PLA = 0x68
+	PLP = 0x28
+
+	ROL_ACC   = 0x2A
+	ROL_ZP    = 0x26
+	ROL_ABS   = 0x2E
+	ROL_ABS_X = 0x3E
+
+	ROR_ACC   = 0x6A
+	ROR_ZP    = 0x66
+	ROR_ABS   = 0x6E
+	ROR_ABS_X = 0x7E
+
+	SEI = 0x78
+
+	STX_ZP   = 0x86
+	STX_ABS  = 0x8E
+	STX_ZP_Y = 0x96
+
+	STY_ZP   = 0x84
+	STY_ABS  = 0x8C
+	STY_ZP_X = 0x94
+
+	CLV = 0xB8
+	CLI = 0x58
+	CLD = 0xD8
+
+	SED = 0xF8
+
+	BIT_ZP  = 0x24
+	BIT_ABS = 0x2C
+
+	SBC_IMM   = 0xE9
+	SBC_ZP    = 0xE5
+	SBC_ABS   = 0xED
+	SBC_ZP_X  = 0xF5
+	SBC_ABS_X = 0xFD
+	SBC_ABS_Y = 0xF9
+	SBC_IND_X = 0xE1
+	SBC_IND_Y = 0xF1
+
+	RTI = 0x40
+
+	NOP = 0xEA
+
+	// NON DOC COMMANDS
+	ISB_ZP    = 0xE7
+	ISB_ZP_X  = 0xF7
+	ISB_ABS   = 0xEF
+	ISB_ABS_X = 0xFF
+	ISB_ABS_Y = 0xFB
+	ISB_IND_X = 0xE3
+	ISB_IND_Y = 0xF3
+)
+
+func (i instruction) String() string {
+	return i.name
+}
