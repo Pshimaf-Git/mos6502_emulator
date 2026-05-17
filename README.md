@@ -57,6 +57,7 @@ func main() {
 
 
 ### Project structure
+
 ```
 ```
 .
@@ -79,7 +80,9 @@ func main() {
 ├── cpu_test.go       – exhaustive test suite
 └── go.mod            – module definition
 ```
-
+```
+```
+```
 
 ### Supported Instructions
 
